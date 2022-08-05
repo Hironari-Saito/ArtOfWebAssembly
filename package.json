@@ -1,0 +1,20 @@
+{
+  "name": "web-assembly",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "node": "^12.14.0",
+    "wat-wasm": "^1.0.43"
+  },
+  "devDependencies": {
+    "connect": "^3.7.0",
+    "serve-static": "^1.15.0"
+  }
+}

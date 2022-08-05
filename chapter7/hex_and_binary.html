@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hex and Binary</title>
+  </head>
+  <script>
+    // 64KBのメモリブロックを確保
+    const memory = new WebAssembly.Memory({ initial: 1});
+    let output = null;
+
+    // WebAssemblyモジュールがインスタンス化されると関数が設定される
+    let setOutput = (number) => {
+      // WebAssemblyモジュールがインスタンス化される前に、この関数を実行するとこのメッセージが表示される
+      console.log("function not available");
+      return 0;
+    };
+
+    // この関数はボタンクリックによって呼び出され、WebAssemblyモジュールのsetOutput関数を呼び出す
+    function setNumbers(number) {
+      if (output == null) {
+        return;
+      }
+
+      // WebAssemblyのsetOutput関数を呼び出すとHTML文字列が生成され、線形メモリに格納され、その長さが返される
+      let len = setOutput(number);
+
+      // 線形メモリ内のHTML文字列の位置と長さはわかっているので、
+      // メモリバッファからその文字列を取り出すことができる
+      let bytes = new Uint8Array(memory.buffer, 1024, len);
+      // 線形メモリから取り出したバイトをJavaScript文字列に変換し、outputのHTMLを設定
+      output.innerHTML = new TextDecoder('utf8').decode(bytes);
+    }
+
+    function onPageLoad() {
+      // ページの読み込みが完了したら、output変数に"output"というidを持つ要素を割り当てる
+      output = document.getElementById("output");
+      let message_num = 0;
+    }
+
+    let importObject = {
+      env: {
+        buffer: memory
+      }
+    };
+
+    (async () => {
+      let obj = await WebAssembly.instantiateStreaming(fetch('hex_and_binary.wasm'), importObject);
+      // setOutput変数にWebAssemblyのsetOutput関数を再設定
+      setOutput = obj.instance.exports.setOutput;
+      let btn = document.getElementById("set_numbers_button");
+      btn.style.display = "block";
+    })();
+  </script>
+  <!-- bodyの読み込みが完了するとbodyタグがonPageLoadを呼び出す -->
+  <body onload="onPageLoad()" style="font-family: 'Courier New', Courier, monospace;">
+    <div id="output">
+      <h1>0</h1>
+      <h4>0x0</h4>
+      <h4> 0000 0000 0000 0000 0000 0000 0000 0000</h4>
+    </div>
+    <!-- 16進数と2進数に変換する値をユーザーがここに入力-->
+    <input type="number" id="val" value="0"><br /><br />
+    <!-- ユーザーがこのボタン口をクリックしたらwasm関数を実行 -->
+    <button id="set_numbers_button" type="button" style="display:none"
+      onclick="setNumbers(document.getElementById('val').value)">
+      SetNumbers
+    </button>
+  </body>
+</html>
