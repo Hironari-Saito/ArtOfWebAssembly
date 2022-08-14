@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collide JS</title>
+</head>
+<body>
+  <canvas id="canvas" width="512" height="512"></canvas>
+  <script type="text/javascript">
+    const cnvs_size = 512 | 0;
+    const noh_color = "rgb(0,255,0)";
+    const hit_color = "rgb(255,0,0)";
+
+    const obj_size = 4 | 0;
+    const obj_cnt = 3000 | 0;
+
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    class Collider { 
+      constructor() {
+        this.x = Math.floor(Math.random() * cnvs_size) | 0;
+        this.y = Math.floor(Math.random() * cnvs_size) | 0;
+        this.xv = (Math.round(Math.random() * 4) - 2) | 0;
+        this.yv = (Math.round(Math.random() * 4) - 2) | 0;
+        this.color = noh_color;
+      }
+      move = () => {
+        this.x += this.xv;
+        this.y += this.yv;
+        this.x &= 0x1ff;
+        this.y &= 0x1ff;
+      }
+      draw = () => {
+        ctx.beginPath();
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, obj_size, obj_size);
+        ctx.stroke();
+      }
+      hitTest = (c2) => {
+        let x_dist = this.x - c2.x;
+        let y_dist = this.y - c2.y;
+
+        if (Math.abs(x_dist) <= obj_size && Math.abs(y_dist) <= obj_size) {
+          this.color = hit_color;
+          return true;
+        }
+        else {
+          this.color = noh_color;
+        }
+        return false;
+      }
+    }
+
+    let collider_array = new Array();
+    for (let i = 0; i < obj_cnt; i++) {
+      collider_array.push(new Collider());
+    }
+
+    function animate() {
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, cnvs_size, cnvs_size);
+
+      for (let i = 0; i < obj_cnt; i++) {
+        collider_array[i].move();
+      }
+
+      // ループとレンダリング
+      for (i = 0; i < obj_cnt; i++) {
+        for (let j=0; j < obj_cnt; j++) {
+          if (i == j) {
+            continue;
+          }
+          if (collider_array[i].hitTest(collider_array[j])) {
+            break;
+          }
+        }
+        collider_array[i].draw();
+      }
+      requestAnimationFrame(animate);
+    }
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>
