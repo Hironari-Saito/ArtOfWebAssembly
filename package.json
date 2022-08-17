@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "assemblyscript": "^0.19.23",
     "colors": "^1.4.0",
     "node": "^12.14.0",
     "wat-wasm": "^1.0.43"
