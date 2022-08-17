@@ -9,9 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@assemblyscript/loader": "^0.19.23",
     "assemblyscript": "^0.19.23",
     "colors": "^1.4.0",
-    "node": "^12.14.0",
+    "node": "^14.20.0",
     "wat-wasm": "^1.0.43"
   },
   "devDependencies": {
