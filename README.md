@@ -1,5 +1,7 @@
 # The Art of WebAssembly
 
+
+## webassembly
 ```
 # install
 npm install
@@ -17,4 +19,11 @@ npx wasm-opt <wasm file> -O[zs] -o <output file>
 ## -O1 < -O2 < -O3: 最適化の効果
 ## -O1 < -O2 < -O3: 実行時間
 npx wasm-opt <wasm file> -O[1-3] -o <output file>
+```
+
+## assemblyScript
+
+```
+npx <assembly script> -O[0-3sz] -o <wat file | wasm file> [--sourceMap]
+
 ```
